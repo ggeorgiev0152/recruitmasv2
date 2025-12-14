@@ -33,6 +33,15 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify build output
+        run: |
+          echo "=== Checking dist directory ==="
+          ls -la ./dist
+          echo "=== Checking if .nojekyll exists ==="
+          ls -la ./dist/.nojekyll || echo ".nojekyll not found!"
+          echo "=== First 50 lines of dist/index.html ==="
+          head -50 ./dist/index.html
+
       - name: Add .nojekyll file
         run: echo '' > ./dist/.nojekyll
 
