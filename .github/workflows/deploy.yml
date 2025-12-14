@@ -39,11 +39,18 @@ jobs:
           ls -la ./dist
           echo "=== Checking if .nojekyll exists ==="
           ls -la ./dist/.nojekyll || echo ".nojekyll not found!"
-          echo "=== First 50 lines of dist/index.html ==="
-          head -50 ./dist/index.html
+          echo "=== Checking assets directory ==="
+          ls -la ./dist/assets/ | head -20
+          echo "=== Last 10 lines of dist/index.html ==="
+          tail -10 ./dist/index.html
+          echo "=== Checking CNAME ==="
+          cat ./dist/CNAME || echo "No CNAME file"
 
       - name: Add .nojekyll file
         run: echo '' > ./dist/.nojekyll
+      
+      - name: Fix permissions
+        run: chmod -R 755 ./dist
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -52,6 +59,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
+          retention-days: 1
 
   deploy:
     environment:

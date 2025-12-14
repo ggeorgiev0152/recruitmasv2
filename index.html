@@ -179,6 +179,23 @@
 
   <!-- Local stylesheet -->
   <link rel="stylesheet" href="/index.css">
+  
+  <!-- Debug and MIME fix -->
+  <script>
+    console.log('=== RECRUITMAS DEBUG ===');
+    console.log('Page loaded at:', new Date().toISOString());
+    console.log('Location:', window.location.href);
+    console.log('User Agent:', navigator.userAgent);
+    
+    // Register service worker to fix MIME types
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker registered:', reg))
+          .catch(err => console.log('Service Worker registration failed:', err));
+      });
+    }
+  </script>
 </head>
 
 <body>
