@@ -17,12 +17,17 @@ export default defineConfig(({ mode }) => {
         },
         base: '/',
         build: {
+            outDir: 'dist',
             assetsInlineLimit: 0,
             rollupOptions: {
+                input: {
+                    main: path.resolve(__dirname, 'index.html')
+                },
                 output: {
                     manualChunks: undefined,
                 }
             }
-        }
+        },
+        publicDir: 'public'
     };
 });
