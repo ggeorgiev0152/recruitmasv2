@@ -15,8 +15,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,21 +38,18 @@ jobs:
 
       - name: Verify build output
         run: |
-          echo "=== Checking dist directory structure ==="
-          find ./dist -type f -name "*.html" -o -name "*.js" -o -name "*.css" | head -20
+          echo "=== Files in dist directory ==="
+          ls -laR ./dist
           echo ""
-          echo "=== Content of dist/index.html (last 20 lines) ==="
-          tail -20 ./dist/index.html
+          echo "=== Last 30 lines of dist/index.html ==="
+          tail -30 ./dist/index.html
           echo ""
-          echo "=== Checking for index.tsx in dist ==="
-          find ./dist -name "*.tsx" -o -name "*.ts" | head -10 || echo "No TypeScript files found (GOOD)"
+          echo "=== Checking for source files in dist (should be empty) ==="
+          find ./dist -name "*.tsx" -o -name "*.ts" -o -name "DO_NOT_DEPLOY.txt" || echo "No source files found (GOOD)"
 
       - name: Add .nojekyll file
-        run: echo '' > ./dist/.nojekyll
+        run: touch ./dist/.nojekyll
       
-      - name: Fix permissions
-        run: chmod -R 755 ./dist
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
@@ -57,15 +57,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
-          retention-days: 1
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
