@@ -33,6 +33,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Clean previous builds
+        run: rm -rf dist node_modules/.vite
+
       - name: Build
         run: npm run build
 
@@ -46,6 +49,9 @@ jobs:
           echo ""
           echo "=== Checking for source files in dist (should be empty) ==="
           find ./dist -name "*.tsx" -o -name "*.ts" -o -name "DO_NOT_DEPLOY.txt" || echo "No source files found (GOOD)"
+          echo ""
+          echo "=== Checking what JavaScript files exist ==="
+          find ./dist -name "*.js" -type f
 
       - name: Add .nojekyll file
         run: touch ./dist/.nojekyll
