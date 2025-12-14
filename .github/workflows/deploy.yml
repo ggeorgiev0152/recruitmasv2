@@ -35,16 +35,14 @@ jobs:
 
       - name: Verify build output
         run: |
-          echo "=== Checking dist directory ==="
-          ls -la ./dist
-          echo "=== Checking if .nojekyll exists ==="
-          ls -la ./dist/.nojekyll || echo ".nojekyll not found!"
-          echo "=== Checking assets directory ==="
-          ls -la ./dist/assets/ | head -20
-          echo "=== Last 10 lines of dist/index.html ==="
-          tail -10 ./dist/index.html
-          echo "=== Checking CNAME ==="
-          cat ./dist/CNAME || echo "No CNAME file"
+          echo "=== Checking dist directory structure ==="
+          find ./dist -type f -name "*.html" -o -name "*.js" -o -name "*.css" | head -20
+          echo ""
+          echo "=== Content of dist/index.html (last 20 lines) ==="
+          tail -20 ./dist/index.html
+          echo ""
+          echo "=== Checking for index.tsx in dist ==="
+          find ./dist -name "*.tsx" -o -name "*.ts" | head -10 || echo "No TypeScript files found (GOOD)"
 
       - name: Add .nojekyll file
         run: echo '' > ./dist/.nojekyll

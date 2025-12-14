@@ -182,10 +182,27 @@
   
   <!-- Debug and MIME fix -->
   <script>
-    console.log('=== RECRUITMAS DEBUG ===');
+    console.log('=== RECRUITMAS DEBUG v2 ===');
     console.log('Page loaded at:', new Date().toISOString());
     console.log('Location:', window.location.href);
-    console.log('User Agent:', navigator.userAgent);
+    console.log('HTML file being served');
+    
+    // Log all script tags to see what's being loaded
+    window.addEventListener('DOMContentLoaded', () => {
+      const scripts = document.querySelectorAll('script[type="module"]');
+      console.log('Module scripts found:', scripts.length);
+      scripts.forEach((script, index) => {
+        console.log(`Script ${index}:`, script.src || script.textContent.substring(0, 50));
+      });
+    });
+    
+    // Intercept module loading errors
+    window.addEventListener('error', (e) => {
+      if (e.message.includes('module script')) {
+        console.error('MODULE LOAD ERROR:', e);
+        console.error('Failed source:', e.filename);
+      }
+    }, true);
     
     // Register service worker to fix MIME types
     if ('serviceWorker' in navigator) {
